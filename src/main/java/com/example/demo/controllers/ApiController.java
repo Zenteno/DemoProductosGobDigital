@@ -7,6 +7,8 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +23,8 @@ import com.example.demo.repositories.ProductosRepository;
 @RestController
 public class ApiController {
 
+	Logger logger = LoggerFactory.getLogger(ApiController.class);
+	
 	@Autowired
     private ProductosRepository productosRepository;
 	
@@ -44,13 +48,19 @@ public class ApiController {
 			if(js.containsKey("serie")){
 				JSONArray series = js.getJSONArray("serie");
 				float valorUf = series.getJSONObject(0).getFloatValue("valor");
+				String fecha = series.getJSONObject(0).getString("fecha");
 				int res = productosRepository.updatePrecioProductosUf(valorUf);
+				
 				respuesta.put("code", 200);
-				respuesta.put("message","Se han modificado exitosamente "+res+" filas");
+				respuesta.put("message", String.format("Se han modificado exitosamente %d filas.",res));
+				respuesta.put("ufvalue",valorUf);
+				respuesta.put("fechauf",fecha);
+				logger.info(String.format("Modificados %d produtos. Valor UF: %f. Fecha UF: %s.",res,valorUf,fecha));
 			}
 		} catch (Exception e) {
 			respuesta.put("code", "500");
 			respuesta.put("message",e.toString());
+			logger.error(e.toString());
 			e.printStackTrace();
 		}
 		return respuesta;
