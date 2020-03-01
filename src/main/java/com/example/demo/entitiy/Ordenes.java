@@ -1,6 +1,6 @@
 // Generated with g9.
 
-package com.example.demo.entities;
+package com.example.demo.entitiy;
 
 import java.io.Serializable;
 import java.sql.Date;
