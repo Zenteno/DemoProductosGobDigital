@@ -16,7 +16,6 @@ import com.example.demo.service.ProductosService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.demo.controller.ApiController;
 import com.example.demo.entitiy.Productos;
 
 @Service
@@ -26,10 +25,23 @@ public class ProductosServiceImpl implements ProductosService{
 	ProductosRepository productRepository;
 	Logger logger = LoggerFactory.getLogger(ProductosServiceImpl.class);
 	
+	
+	/**
+	 * List all the products of the database
+	 *
+	 * @return list of the products
+	 */
 	public List<Productos> findAll() {
 		return productRepository.findAll();
 	}
 
+	
+	/**
+	 * Update the prices of all the products in the database
+	 * Consumes API for getting the UF daily value
+	 *
+	 * @return JSONObject with the status and message of this operation
+	 */
 	@Override
 	public JSONObject updatePricesFromUf() {
 		JSONObject respuesta = new JSONObject();
