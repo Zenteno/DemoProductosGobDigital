@@ -28,6 +28,6 @@ public class ApiController {
 	
 	@PostMapping("/actualizar-precios-uf")
 	public JSONObject actualizaProductos() {
-		return productosServices.updatePricesFromUf();
+		return productosServices.requestUfValue();
 	}
 }

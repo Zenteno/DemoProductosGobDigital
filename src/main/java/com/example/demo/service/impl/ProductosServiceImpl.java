@@ -38,12 +38,24 @@ public class ProductosServiceImpl implements ProductosService{
 	
 	/**
 	 * Update the prices of all the products in the database
-	 * Consumes API for getting the UF daily value
-	 *
-	 * @return JSONObject with the status and message of this operation
+	 
+	 * @param uf
+	 * @return number of rows updated
 	 */
 	@Override
-	public JSONObject updatePricesFromUf() {
+	public int updatePricesFromUf(float uf) {
+		if(uf<=0)
+			return 0;
+		return productRepository.updatePrecioProductosUf(uf);
+	}
+	
+	/**
+	 * Fetch the uf value of the day, from https://mindicador.cl/api/uf 
+	 * 
+	 * @param url
+	 * @return JSONObject
+	 */
+	public JSONObject requestUfValue() {
 		JSONObject respuesta = new JSONObject();
 		HttpClient client = HttpClient.newHttpClient();
 	    HttpRequest request = HttpRequest.newBuilder()
@@ -59,8 +71,7 @@ public class ProductosServiceImpl implements ProductosService{
 				if(series.size()>0 && series.getJSONObject(0).containsKey("valor")  && series.getJSONObject(0).containsKey("fecha")){
 					float valorUf = series.getJSONObject(0).getFloatValue("valor");
 					String fecha = series.getJSONObject(0).getString("fecha");
-					int res = productRepository.updatePrecioProductosUf(valorUf);
-					
+					int res = updatePricesFromUf(valorUf); 
 					respuesta.put("code", 200);
 					respuesta.put("message", String.format("Se han modificado exitosamente %d filas.",res));
 					respuesta.put("valoruf",valorUf);
